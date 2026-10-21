@@ -8,101 +8,44 @@
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
-
-:root {
-  --bg:#090909;
-  --panel:rgba(255,255,255,.035);
-  --line:rgba(255,255,255,.085);
-  --muted:#77777e;
-  --text:#f5f5f5;
-  --green:#b9f6ca;
-}
-
+:root { --bg:#090909; --panel:rgba(255,255,255,.035); --line:rgba(255,255,255,.085); --muted:#77777e; --text:#f5f5f5; --green:#b9f6ca; }
 *{box-sizing:border-box}
-body{
-  margin:0;min-height:100vh;color:var(--text);
-  background:radial-gradient(ellipse at 50% -15%,#252525,transparent 48%),var(--bg);
-  font-family:'DM Sans',sans-serif;
-  -webkit-font-smoothing:antialiased;
-}
+body{margin:0;min-height:100vh;color:var(--text);background:radial-gradient(ellipse at 50% -15%,#252525,transparent 48%),var(--bg);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;}
 button{font:inherit}
 .container{width:min(100% - 28px,700px);margin:auto;padding:29px 0 45px}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:34px}
 .brand{display:flex;align-items:center;gap:11px}
-.brand-icon{
-  width:40px;height:40px;display:grid;place-items:center;
-  background:linear-gradient(145deg,#292929,#111);
-  border:1px solid #383838;border-radius:13px
-}
+.brand-icon{width:40px;height:40px;display:grid;place-items:center;background:linear-gradient(145deg,#292929,#111);border:1px solid #383838;border-radius:13px}
 .brand-name{font:800 15px Manrope,sans-serif;letter-spacing:-.4px}
 .brand-caption{margin-top:3px;color:var(--muted);font-size:11px}
-.status{
-  display:flex;align-items:center;gap:7px;padding:8px 11px;
-  border:1px solid var(--line);background:#ffffff04;
-  border-radius:30px;font-size:11px;color:#c4c4c4
-}
+.status{display:flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid var(--line);background:#ffffff04;border-radius:30px;font-size:11px;color:#c4c4c4}
 .status-dot{width:6px;height:6px;background:var(--green);border-radius:50%}
 .eyebrow{color:#929292;letter-spacing:1.8px;font-size:10px;font-weight:700;text-transform:uppercase}
 h1{margin:9px 0 7px;font:800 clamp(28px,6vw,38px)/1.2 Manrope,sans-serif;letter-spacing:-1.5px}
 .subtitle{color:#85858a;font-size:13px;line-height:1.7;margin:0 0 22px}
-.glass{
-  border:1px solid var(--line);
-  background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
-  box-shadow:0 20px 65px #00000030;
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-  border-radius:22px
-}
+.glass{border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.018));box-shadow:0 20px 65px #00000030;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-radius:22px}
 .product-card{padding:22px;position:relative;overflow:hidden}
 .product-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
 .product-label,.code-label{font-size:11px;color:#85858a;margin-bottom:7px}
 .product-name{font:700 21px Manrope,sans-serif;letter-spacing:-.7px}
-.product-type{
-  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
-  color:#c5c5c5;font-size:11px;padding:6px 9px;
-  border:1px solid var(--line);border-radius:8px
-}
+.product-type{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:#c5c5c5;font-size:11px;padding:6px 9px;border:1px solid var(--line);border-radius:8px}
 .product-type svg{color:var(--green)}
 .price{font:800 clamp(22px,5vw,29px) Manrope,sans-serif;letter-spacing:-1px;white-space:nowrap}
 .price small{font-size:11px;color:#888;font-weight:500;letter-spacing:0}
 .code-box{margin-top:23px;border-top:1px solid var(--line);padding-top:17px}
 .unique-text{font-size:13px;color:var(--green)}
-.receipt-code-box{
-  margin-top:12px;border:1px solid var(--line);border-radius:15px;
-  background:#ffffff03;overflow:hidden
-}
-.receipt-code-btn{
-  width:100%;padding:15px 17px;display:flex;justify-content:space-between;
-  align-items:center;gap:12px;text-align:left;color:var(--text);
-  border:0;background:transparent;cursor:pointer
-}
+.receipt-code-box{margin-top:12px;border:1px solid var(--line);border-radius:15px;background:#ffffff03;overflow:hidden}
+.receipt-code-btn{width:100%;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;color:var(--text);border:0;background:transparent;cursor:pointer}
 .receipt-code-caption{display:block;color:#77777e;font-size:11px;margin-top:5px}
 #receiptCodeArrow{transition:transform .2s;flex-shrink:0}
-.receipt-code-result{
-  margin:0 15px 15px;padding:13px;border:1px solid #b9f6ca22;
-  border-radius:11px;background:#b9f6ca06;
-  display:flex;justify-content:space-between;align-items:center;gap:10px
-}
+.receipt-code-result{margin:0 15px 15px;padding:13px;border:1px solid #b9f6ca22;border-radius:11px;background:#b9f6ca06;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .receipt-code-result[hidden]{display:none}
-.receipt-code-value{
-  font-family:monospace;color:var(--green);font-size:12px;
-  letter-spacing:.5px;overflow-wrap:anywhere
-}
-.copy-btn{
-  flex-shrink:0;display:flex;align-items:center;gap:6px;
-  color:#ddd;background:#ffffff08;border:1px solid var(--line);
-  border-radius:9px;padding:9px 11px;font-size:11px;cursor:pointer
-}
+.receipt-code-value{font-family:monospace;color:var(--green);font-size:12px;letter-spacing:.5px;overflow-wrap:anywhere}
+.copy-btn{flex-shrink:0;display:flex;align-items:center;gap:6px;color:#ddd;background:#ffffff08;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:11px;cursor:pointer}
 .copy-btn:hover{background:#ffffff12}
-.payment{
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  margin-top:15px;padding:15px 17px;border:1px solid var(--line);
-  border-radius:15px;background:#ffffff03
-}
+.payment{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:15px;padding:15px 17px;border:1px solid var(--line);border-radius:15px;background:#ffffff03}
 .payment-left{display:flex;align-items:center;gap:12px}
-.payment-icon{
-  width:39px;height:39px;display:grid;place-items:center;
-  border:1px solid var(--line);border-radius:11px;background:#ffffff05
-}
+.payment-icon{width:39px;height:39px;display:grid;place-items:center;border:1px solid var(--line);border-radius:11px;background:#ffffff05}
 .payment-title{font-size:13px;font-weight:700}
 .payment-sub{color:#85858a;font-size:11px;margin-top:4px}
 .qris-logo{width:72px;height:29px}
@@ -114,56 +57,33 @@ h1{margin:9px 0 7px;font:800 clamp(28px,6vw,38px)/1.2 Manrope,sans-serif;letter-
 .table-wrap{overflow:hidden;border:1px solid var(--line);border-radius:16px;background:#ffffff02}
 table{width:100%;border-collapse:collapse;text-align:left}
 th{padding:14px 15px;background:#ffffff04;color:#77777e;text-transform:uppercase;font-size:9px;letter-spacing:1px;border-bottom:1px solid var(--line)}
-td{padding:14px 15px;font-size:12px;border-bottom:1px solid #ffffff08}
+td{padding:14px 15px;font-size:12px;border-bottom:1px solid #ffffff08; vertical-align: middle;}
 tbody tr:last-child td{border-bottom:0}
 .empty{padding:39px 15px 35px;text-align:center}
-.empty-icon{
-  width:47px;height:47px;margin:0 auto 14px;display:grid;place-items:center;
-  border:1px solid #ffffff12;background:#ffffff04;border-radius:15px;color:#777
-}
+.empty-icon{width:47px;height:47px;margin:0 auto 14px;display:grid;place-items:center;border:1px solid #ffffff12;background:#ffffff04;border-radius:15px;color:#777}
 .empty-title{font-size:13px;font-weight:700;margin-bottom:6px}
 .empty-desc{font-size:11px;line-height:1.7;color:#77777e}
 .receipt-code{color:var(--green);font-family:monospace;font-size:10px;display:block;margin-top:5px;overflow-wrap:anywhere}
-.create-btn{
-  display:flex;width:100%;justify-content:center;align-items:center;gap:9px;
-  margin-top:15px;padding:15px;border:1px solid #e5e5e5;border-radius:13px;
-  background:#f3f3f3;color:#111;font-size:13px;font-weight:700;cursor:pointer;transition:.2s
-}
+.create-btn{display:flex;width:100%;justify-content:center;align-items:center;gap:9px;margin-top:15px;padding:15px;border:1px solid #e5e5e5;border-radius:13px;background:#f3f3f3;color:#111;font-size:13px;font-weight:700;cursor:pointer;transition:.2s}
 .create-btn:hover{background:white;transform:translateY(-1px)}
 .create-btn:active{transform:scale(.99)}
-.footer{
-  margin-top:28px;padding-top:17px;border-top:1px solid #ffffff0c;
-  display:flex;justify-content:space-between;gap:12px;color:#66666b;font-size:10px
-}
+.footer{margin-top:28px;padding-top:17px;border-top:1px solid #ffffff0c;display:flex;justify-content:space-between;gap:12px;color:#66666b;font-size:10px}
 .footer-brand{color:#aaa;font-weight:700}
-.toast{
-  position:fixed;bottom:25px;left:50%;transform:translate(-50%,15px);
-  opacity:0;pointer-events:none;display:flex;align-items:center;gap:8px;
-  padding:12px 17px;border:1px solid #ffffff20;border-radius:12px;
-  background:#1b1b1b;box-shadow:0 12px 35px #0008;color:#eee;
-  font-size:12px;transition:.25s;z-index:10;white-space:nowrap
-}
+.toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,15px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:8px;padding:12px 17px;border:1px solid #ffffff20;border-radius:12px;background:#1b1b1b;box-shadow:0 12px 35px #0008;color:#eee;font-size:12px;transition:.25s;z-index:10;white-space:nowrap}
 .toast.show{opacity:1;transform:translate(-50%,0)}
-@media(max-width:430px){
-  .container{padding-top:23px}
-  .product-card{padding:18px}
-  .product-name{font-size:19px}
-  th,td{padding:12px 9px}
-}
+.btn-del-lokal{background: transparent; border: none; color: var(--muted); cursor: pointer; padding: 5px;}
+.btn-del-lokal:hover{color: var(--red);}
+@media(max-width:430px){.container{padding-top:23px}.product-card{padding:18px}.product-name{font-size:19px}th,td{padding:12px 9px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
 </style>
 </head>
 
 <body>
 <main class="container">
-
 <header class="topbar">
   <div class="brand">
     <div class="brand-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M5 7.5 12 3l7 4.5v9L12 21l-7-4.5z"/>
-        <path d="m5 7.5 7 4.5 7-4.5M12 12v9"/>
-      </svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7.5 12 3l7 4.5v9L12 21l-7-4.5z"/><path d="m5 7.5 7 4.5 7-4.5M12 12v9"/></svg>
     </div>
     <div>
       <div class="brand-name">Firman prem</div>
@@ -184,16 +104,10 @@ tbody tr:last-child td{border-bottom:0}
     <div>
       <div class="product-label">Produk tersedia</div>
       <div class="product-name">Firman prem</div>
-      <div class="product-type">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h5"/>
-        </svg>
-        Produk digital
-      </div>
+      <div class="product-type"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h5"/></svg> Produk digital</div>
     </div>
     <div class="price"><small>Rp</small> 2.000</div>
   </div>
-
   <div class="code-box">
     <div class="code-label">Kode unik QRIS</div>
     <div class="unique-text">Kode unik QRIS berbeda-beda</div>
@@ -206,11 +120,8 @@ tbody tr:last-child td{border-bottom:0}
       <span class="code-label">Kode struk</span>
       <span class="receipt-code-caption" id="receiptCaption">Ketuk untuk melihat kode struk</span>
     </span>
-    <svg id="receiptCodeArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-      <path d="m9 18 6-6-6-6"/>
-    </svg>
+    <svg id="receiptCodeArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
   </button>
-
   <div class="receipt-code-result" id="receiptCodeResult" hidden>
     <span class="receipt-code-value" id="receiptCodeValue">Belum ada kode</span>
     <button class="copy-btn" id="copyReceiptCode" type="button">Salin</button>
@@ -219,32 +130,15 @@ tbody tr:last-child td{border-bottom:0}
 
 <section class="payment">
   <div class="payment-left">
-    <div class="payment-icon">
-      <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/>
-        <path d="M14 14h3v3h-3zM20 14v2M17 20h4M20 18v3"/>
-      </svg>
-    </div>
+    <div class="payment-icon"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v2M17 20h4M20 18v3"/></svg></div>
     <div>
       <div class="payment-title">Pembayaran QRIS</div>
       <div class="payment-sub">Metode pembayaran</div>
     </div>
   </div>
   <div style="text-align:right">
-    <svg class="qris-logo" viewBox="0 0 110 42" role="img" aria-label="QRIS">
-      <text x="2" y="31" font-family="Arial,sans-serif" font-weight="900" font-size="32" font-style="italic" fill="#f5f5f5">QR</text>
-      <path d="M53 7h8l-9 27h-8z" fill="#f1a43a"/>
-      <path d="M65 7h8l-9 27h-8z" fill="#e94a4a"/>
-      <text x="70" y="31" font-family="Arial,sans-serif" font-weight="900" font-size="30" font-style="italic" fill="#68c985">S</text>
-    </svg>
-    <div class="secure">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
-      </svg>
-      Metode pembayaran
-    </div>
+    <svg class="qris-logo" viewBox="0 0 110 42" role="img" aria-label="QRIS"><text x="2" y="31" font-family="Arial,sans-serif" font-weight="900" font-size="32" font-style="italic" fill="#f5f5f5">QR</text><path d="M53 7h8l-9 27h-8z" fill="#f1a43a"/><path d="M65 7h8l-9 27h-8z" fill="#e94a4a"/><text x="70" y="31" font-family="Arial,sans-serif" font-weight="900" font-size="30" font-style="italic" fill="#68c985">S</text></svg>
+    <div class="secure"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Metode pembayaran</div>
   </div>
 </section>
 
@@ -253,32 +147,21 @@ tbody tr:last-child td{border-bottom:0}
     <div class="section-title">Riwayat struk</div>
     <div class="count" id="receiptCount">0 struk</div>
   </div>
-
   <div class="table-wrap">
     <table id="receiptTableElement" style="display:none">
       <thead>
-        <tr><th>Produk / Kode</th><th>Harga</th><th>Status</th></tr>
+        <tr><th>Produk / Kode</th><th>Harga</th><th>Status</th><th></th></tr>
       </thead>
       <tbody id="receiptTable"></tbody>
     </table>
-
     <div class="empty" id="emptyState">
-      <div class="empty-icon">
-        <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
-          <path d="M14 3v5h5M9 13h6M9 17h6"/>
-        </svg>
-      </div>
+      <div class="empty-icon"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div>
       <div class="empty-title">Struk belum ada</div>
       <div class="empty-desc">Belum ada struk yang dibuat.<br>Tekan tombol di bawah untuk membuat struk baru.</div>
     </div>
   </div>
-
   <button class="create-btn" id="createReceipt" type="button">
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 5v14M5 12h14"/>
-    </svg>
-    Bikin Struk
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Bikin Struk
   </button>
 </section>
 
@@ -289,19 +172,14 @@ tbody tr:last-child td{border-bottom:0}
 </main>
 
 <div class="toast" id="toast" role="status" aria-live="polite">
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b9f6ca" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <path d="m5 12 4 4L19 6"/>
-  </svg>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#b9f6ca" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>
   <span id="toastText">Berhasil</span>
 </div>
 
 <script>
 const $ = id => document.getElementById(id);
-
-// URL BACKEND VERCEL LO
 const API_URL = "https://firman-struk-digital.vercel.app/api/struk";
 
-// AMBIL DATA DARI MEMORI HP (LOCALSTORAGE)
 let receipts = JSON.parse(localStorage.getItem('buyer_receipts')) || [];
 let latestReceiptCode = '';
 let toastTimer;
@@ -316,7 +194,6 @@ function showToast(message) {
 function renderReceipts() {
   const tbody = $('receiptTable');
   tbody.replaceChildren();
-
   $('receiptCount').textContent = receipts.length + ' struk';
   $('emptyState').style.display = receipts.length ? 'none' : 'block';
   $('receiptTableElement').style.display = receipts.length ? 'table' : 'none';
@@ -324,7 +201,6 @@ function renderReceipts() {
   receipts.forEach(receipt => {
     const row = document.createElement('tr');
     
-    // Kolom Produk
     const product = document.createElement('td');
     const name = document.createElement('div');
     name.textContent = 'Firman prem';
@@ -334,15 +210,13 @@ function renderReceipts() {
     code.textContent = receipt.code;
     product.append(name, code);
 
-    // Kolom Harga
     const price = document.createElement('td');
     price.textContent = 'Rp2.000';
     price.style.whiteSpace = 'nowrap';
 
-    // Kolom Status (KITA KASIH ID UNIK BIAR GAMPANG DIUBAH NANTI)
     const statusCell = document.createElement('td');
     const status = document.createElement('span');
-    status.id = `status-${receipt.code}`; // <-- ID UNIK BADGE
+    status.id = `status-${receipt.code}`;
     
     const isConfirmed = receipt.status === 'CONFIRMED';
     const isRejected = receipt.status === 'REJECTED';
@@ -353,21 +227,34 @@ function renderReceipts() {
     if(isConfirmed) { color = '#b9f6ca'; borderColor = '#b9f6ca25'; }
     if(isRejected) { color = '#e94a4a'; borderColor = '#e94a4a25'; }
 
-    status.style.cssText = `color:${color};font-size:10px;padding:5px 8px;` +
-      `border:1px solid ${borderColor};border-radius:7px;white-space:nowrap`;
+    status.style.cssText = `color:${color};font-size:10px;padding:5px 8px;border:1px solid ${borderColor};border-radius:7px;white-space:nowrap`;
     statusCell.append(status);
 
-    row.append(product, price, statusCell);
+    // TOMBOL HAPUS LOKAL
+    const actionCell = document.createElement('td');
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn-del-lokal';
+    delBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+    delBtn.onclick = () => hapusLokal(receipt.code);
+    actionCell.append(delBtn);
+
+    row.append(product, price, statusCell, actionCell);
     tbody.append(row);
   });
 }
 
-// --- FITUR AUTO REFRESH SILUMAN (TANPA NGE-BLANK) ---
+function hapusLokal(code) {
+  if(confirm("Hapus struk ini dari layar Anda?\n(Struk di Admin tidak akan terhapus)")) {
+    receipts = receipts.filter(r => r.code !== code);
+    localStorage.setItem('buyer_receipts', JSON.stringify(receipts));
+    renderReceipts();
+    showToast('Struk dihapus dari layar');
+  }
+}
+
 async function cekStatusStruk() {
   if (receipts.length === 0) return; 
-
   const idStruk = receipts.map(r => r.code).join(',');
-  
   try {
     const response = await fetch(`${API_URL}?ids=${idStruk}`);
     if(!response.ok) return; 
@@ -378,17 +265,14 @@ async function cekStatusStruk() {
     receipts.forEach(strukLokal => {
       const strukServer = dataServer.find(s => s.receipt_id === strukLokal.code);
       
-      // Kalau status di server beda dengan di HP pembeli
       if (strukServer && strukServer.status !== strukLokal.status) {
-        strukLokal.status = strukServer.status; // Update data di memori
+        strukLokal.status = strukServer.status;
         adaPerubahan = true;
 
-        // TRIK SILUMAN: Ubah teks & warna badge langsung tanpa nge-render ulang tabel
         const badge = document.getElementById(`status-${strukLokal.code}`);
         if (badge) {
           const isConfirmed = strukServer.status === 'CONFIRMED';
           const isRejected = strukServer.status === 'REJECTED';
-
           badge.textContent = isConfirmed ? 'Selesai' : (isRejected ? 'Ditolak' : 'Menunggu');
           
           let color = '#f1a43a'; 
@@ -402,21 +286,16 @@ async function cekStatusStruk() {
       }
     });
 
-    // Simpan status baru ke memori HP
     if (adaPerubahan) {
       localStorage.setItem('buyer_receipts', JSON.stringify(receipts));
     }
-
   } catch (error) {
     console.log("Pengecekan background gagal:", error);
   }
 }
 
 $('showReceiptCode').addEventListener('click', () => {
-  if (!latestReceiptCode) {
-    showToast('Bikin struk terlebih dahulu');
-    return;
-  }
+  if (!latestReceiptCode) return showToast('Bikin struk terlebih dahulu');
   const result = $('receiptCodeResult');
   result.hidden = !result.hidden;
   $('showReceiptCode').setAttribute('aria-expanded', String(!result.hidden));
@@ -454,25 +333,14 @@ $('createReceipt').addEventListener('click', async () => {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        buyer_name: "Pelanggan", 
-        items: [{ name: "Firman prem", qty: 1, price: 2000 }]
-      })
+      body: JSON.stringify({ buyer_name: "Pelanggan", items: [{ name: "Firman prem", qty: 1, price: 2000 }] })
     });
 
     const data = await response.json();
-    
     if (data.error) throw new Error(data.error);
 
     latestReceiptCode = data.receipt_id;
-
-    receipts.unshift({
-      code: latestReceiptCode,
-      price: 2000,
-      status: 'PENDING',
-      createdAt: new Date().toISOString()
-    });
-
+    receipts.unshift({ code: latestReceiptCode, price: 2000, status: 'PENDING', createdAt: new Date().toISOString() });
     localStorage.setItem('buyer_receipts', JSON.stringify(receipts));
 
     $('receiptCodeValue').textContent = latestReceiptCode;
@@ -492,14 +360,9 @@ $('createReceipt').addEventListener('click', async () => {
   }
 });
 
-// Tampilkan data saat halaman pertama kali dibuka
 renderReceipts();
-
-// Jalankan pengecekan pertama kali secara background
 cekStatusStruk();
-
-// Jalankan otomatis setiap 9 detik secara senyap
-setInterval(cekStatusStruk, 9000);
+setInterval(cekStatusStruk, 5000); // <-- SEKARANG 5 DETIK
 </script>
 </body>
 </html>
