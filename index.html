@@ -298,6 +298,9 @@ tbody tr:last-child td{border-bottom:0}
 <script>
 const $ = id => document.getElementById(id);
 
+// URL BACKEND VERCEL LO
+const API_URL = "https://firman-struk-digital.vercel.app/api/struk";
+
 let receipts = [];
 let latestReceiptCode = '';
 let toastTimer;
@@ -307,16 +310,6 @@ function showToast(message) {
   $('toast').classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => $('toast').classList.remove('show'), 2200);
-}
-
-function generateReceiptCode() {
-  let code;
-  do {
-    const time = Date.now().toString(36).toUpperCase();
-    const random = Math.random().toString(36).slice(2, 8).toUpperCase();
-    code = 'FRM-' + time + '-' + random;
-  } while (receipts.some(r => r.code === code));
-  return code;
 }
 
 function renderReceipts() {
@@ -329,26 +322,29 @@ function renderReceipts() {
 
   receipts.forEach(receipt => {
     const row = document.createElement('tr');
+    
+    // Kolom Produk
     const product = document.createElement('td');
     const name = document.createElement('div');
     name.textContent = 'Firman prem';
     name.style.fontWeight = '600';
-
     const code = document.createElement('span');
     code.className = 'receipt-code';
     code.textContent = receipt.code;
     product.append(name, code);
 
+    // Kolom Harga
     const price = document.createElement('td');
     price.textContent = 'Rp2.000';
     price.style.whiteSpace = 'nowrap';
 
+    // Kolom Status
     const statusCell = document.createElement('td');
     const status = document.createElement('span');
-    status.textContent = 'Dibuat';
-    status.style.cssText =
-      'color:#b9f6ca;font-size:10px;padding:5px 8px;' +
-      'border:1px solid #b9f6ca25;border-radius:7px;white-space:nowrap';
+    const isConfirmed = receipt.status === 'CONFIRMED';
+    status.textContent = isConfirmed ? 'Selesai' : 'Menunggu';
+    status.style.cssText = `color:${isConfirmed ? '#b9f6ca' : '#f1a43a'};font-size:10px;padding:5px 8px;` +
+      `border:1px solid ${isConfirmed ? '#b9f6ca25' : '#f1a43a25'};border-radius:7px;white-space:nowrap`;
     statusCell.append(status);
 
     row.append(product, price, statusCell);
@@ -361,19 +357,15 @@ $('showReceiptCode').addEventListener('click', () => {
     showToast('Bikin struk terlebih dahulu');
     return;
   }
-
   const result = $('receiptCodeResult');
   result.hidden = !result.hidden;
   $('showReceiptCode').setAttribute('aria-expanded', String(!result.hidden));
-  $('receiptCodeArrow').style.transform =
-    result.hidden ? '' : 'rotate(90deg)';
-  $('receiptCaption').textContent =
-    result.hidden ? 'Ketuk untuk melihat kode struk' : 'Kode struk kamu';
+  $('receiptCodeArrow').style.transform = result.hidden ? '' : 'rotate(90deg)';
+  $('receiptCaption').textContent = result.hidden ? 'Ketuk untuk melihat kode struk' : 'Kode struk kamu';
 });
 
 $('copyReceiptCode').addEventListener('click', async () => {
   if (!latestReceiptCode) return;
-
   try {
     await navigator.clipboard.writeText(latestReceiptCode);
     showToast('Kode struk berhasil disalin');
@@ -391,23 +383,55 @@ $('copyReceiptCode').addEventListener('click', async () => {
   }
 });
 
-$('createReceipt').addEventListener('click', () => {
-  latestReceiptCode = generateReceiptCode();
+$('createReceipt').addEventListener('click', async () => {
+  const btn = $('createReceipt');
+  const originalText = btn.innerHTML;
+  
+  // Ubah tombol jadi loading
+  btn.disabled = true;
+  btn.innerHTML = 'Memproses...';
 
-  receipts.unshift({
-    code: latestReceiptCode,
-    price: 2000,
-    createdAt: new Date().toISOString()
-  });
+  try {
+    // Tembak API Vercel
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        buyer_name: "Pelanggan", 
+        items: [{ name: "Firman prem", qty: 1, price: 2000 }]
+      })
+    });
 
-  $('receiptCodeValue').textContent = latestReceiptCode;
-  $('receiptCodeResult').hidden = true;
-  $('showReceiptCode').setAttribute('aria-expanded', 'false');
-  $('receiptCodeArrow').style.transform = '';
-  $('receiptCaption').textContent = 'Ketuk untuk melihat kode struk';
+    const data = await response.json();
+    
+    if (data.error) throw new Error(data.error);
 
-  renderReceipts();
-  showToast('Struk berhasil dibuat');
+    latestReceiptCode = data.receipt_id;
+
+    // Masukkan data dari server ke tampilan
+    receipts.unshift({
+      code: latestReceiptCode,
+      price: 2000,
+      status: 'PENDING',
+      createdAt: new Date().toISOString()
+    });
+
+    $('receiptCodeValue').textContent = latestReceiptCode;
+    $('receiptCodeResult').hidden = true;
+    $('showReceiptCode').setAttribute('aria-expanded', 'false');
+    $('receiptCodeArrow').style.transform = '';
+    $('receiptCaption').textContent = 'Ketuk untuk melihat kode struk';
+
+    renderReceipts();
+    showToast('Struk berhasil dibuat!');
+
+  } catch (error) {
+    showToast('Error: ' + error.message);
+  } finally {
+    // Balikin tombol ke semula
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
 });
 
 renderReceipts();
