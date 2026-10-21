@@ -339,15 +339,16 @@ function renderReceipts() {
     price.textContent = 'Rp2.000';
     price.style.whiteSpace = 'nowrap';
 
-    // Kolom Status
+    // Kolom Status (KITA KASIH ID UNIK BIAR GAMPANG DIUBAH NANTI)
     const statusCell = document.createElement('td');
     const status = document.createElement('span');
+    status.id = `status-${receipt.code}`; // <-- ID UNIK BADGE
+    
     const isConfirmed = receipt.status === 'CONFIRMED';
     const isRejected = receipt.status === 'REJECTED';
-    
     status.textContent = isConfirmed ? 'Selesai' : (isRejected ? 'Ditolak' : 'Menunggu');
     
-    let color = '#f1a43a'; // Orange untuk pending
+    let color = '#f1a43a'; 
     let borderColor = '#f1a43a25';
     if(isConfirmed) { color = '#b9f6ca'; borderColor = '#b9f6ca25'; }
     if(isRejected) { color = '#e94a4a'; borderColor = '#e94a4a25'; }
@@ -359,6 +360,56 @@ function renderReceipts() {
     row.append(product, price, statusCell);
     tbody.append(row);
   });
+}
+
+// --- FITUR AUTO REFRESH SILUMAN (TANPA NGE-BLANK) ---
+async function cekStatusStruk() {
+  if (receipts.length === 0) return; 
+
+  const idStruk = receipts.map(r => r.code).join(',');
+  
+  try {
+    const response = await fetch(`${API_URL}?ids=${idStruk}`);
+    if(!response.ok) return; 
+    
+    const dataServer = await response.json();
+    let adaPerubahan = false;
+
+    receipts.forEach(strukLokal => {
+      const strukServer = dataServer.find(s => s.receipt_id === strukLokal.code);
+      
+      // Kalau status di server beda dengan di HP pembeli
+      if (strukServer && strukServer.status !== strukLokal.status) {
+        strukLokal.status = strukServer.status; // Update data di memori
+        adaPerubahan = true;
+
+        // TRIK SILUMAN: Ubah teks & warna badge langsung tanpa nge-render ulang tabel
+        const badge = document.getElementById(`status-${strukLokal.code}`);
+        if (badge) {
+          const isConfirmed = strukServer.status === 'CONFIRMED';
+          const isRejected = strukServer.status === 'REJECTED';
+
+          badge.textContent = isConfirmed ? 'Selesai' : (isRejected ? 'Ditolak' : 'Menunggu');
+          
+          let color = '#f1a43a'; 
+          let borderColor = '#f1a43a25';
+          if(isConfirmed) { color = '#b9f6ca'; borderColor = '#b9f6ca25'; }
+          if(isRejected) { color = '#e94a4a'; borderColor = '#e94a4a25'; }
+
+          badge.style.color = color;
+          badge.style.borderColor = borderColor;
+        }
+      }
+    });
+
+    // Simpan status baru ke memori HP
+    if (adaPerubahan) {
+      localStorage.setItem('buyer_receipts', JSON.stringify(receipts));
+    }
+
+  } catch (error) {
+    console.log("Pengecekan background gagal:", error);
+  }
 }
 
 $('showReceiptCode').addEventListener('click', () => {
@@ -396,12 +447,10 @@ $('createReceipt').addEventListener('click', async () => {
   const btn = $('createReceipt');
   const originalText = btn.innerHTML;
   
-  // Ubah tombol jadi loading
   btn.disabled = true;
   btn.innerHTML = 'Memproses...';
 
   try {
-    // Tembak API Vercel
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -417,7 +466,6 @@ $('createReceipt').addEventListener('click', async () => {
 
     latestReceiptCode = data.receipt_id;
 
-    // Masukkan data dari server ke tampilan
     receipts.unshift({
       code: latestReceiptCode,
       price: 2000,
@@ -425,7 +473,6 @@ $('createReceipt').addEventListener('click', async () => {
       createdAt: new Date().toISOString()
     });
 
-    // SIMPAN KE MEMORI HP AGAR TIDAK HILANG SAAT REFRESH
     localStorage.setItem('buyer_receipts', JSON.stringify(receipts));
 
     $('receiptCodeValue').textContent = latestReceiptCode;
@@ -440,7 +487,6 @@ $('createReceipt').addEventListener('click', async () => {
   } catch (error) {
     showToast('Error: ' + error.message);
   } finally {
-    // Balikin tombol ke semula
     btn.disabled = false;
     btn.innerHTML = originalText;
   }
@@ -448,6 +494,12 @@ $('createReceipt').addEventListener('click', async () => {
 
 // Tampilkan data saat halaman pertama kali dibuka
 renderReceipts();
+
+// Jalankan pengecekan pertama kali secara background
+cekStatusStruk();
+
+// Jalankan otomatis setiap 9 detik secara senyap
+setInterval(cekStatusStruk, 9000);
 </script>
 </body>
 </html>
