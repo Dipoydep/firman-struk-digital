@@ -1,152 +1,98 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Kunci ini bakal diambil dari Environment Variables Vercel
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Password Admin (Nanti kita atur di Vercel)
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 export default async function handler(req, res) {
-  // Setup CORS biar GitHub Pages / Vercel Admin bisa akses
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-password');
-
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  // ==========================================
-  // 1. LOGIKA BUAT STRUK BARU (METHOD POST)
-  // ==========================================
+  // 1. POST (Bikin Struk)
   if (req.method === 'POST') {
     try {
       const { buyer_name, items } = req.body;
+      if (!items || items.length === 0) return res.status(400).json({ error: "Data kosong" });
 
-      if (!items || items.length === 0) {
-        return res.status(400).json({ error: "Data barang kosong" });
-      }
-
-      // Bikin kode unik FRM-xxxx
       const time = Date.now().toString(36).toUpperCase();
       const random = Math.random().toString(36).slice(2, 8).toUpperCase();
       const receipt_id = `FRM-${time}-${random}`;
-
-      // Hitung total di server (anti manipulasi)
       const total_amount = items.reduce((sum, item) => sum + (item.qty * item.price), 0);
 
-      // Simpan ke Supabase
       const { data, error } = await supabase
         .from('receipts')
-        .insert([{ 
-          receipt_id: receipt_id, 
-          buyer_name: buyer_name || 'Pelanggan', 
-          items: items, 
-          total_amount: total_amount,
-          status: 'PENDING'
-        }])
+        .insert([{ receipt_id, buyer_name: buyer_name || 'Pelanggan', items, total_amount, status: 'PENDING' }])
         .select();
 
       if (error) throw error;
-
-      // Balikin data ke Frontend
-      return res.status(200).json({
-        message: 'Struk berhasil dibuat',
-        receipt_id: receipt_id,
-        total_amount: total_amount,
-        data: data[0]
-      });
-
+      return res.status(200).json({ message: 'Struk dibuat', receipt_id, total_amount, data: data[0] });
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
   }
 
-  // ==========================================
-  // 2. LOGIKA ADMIN LIHAT DAFTAR STRUK (METHOD GET)
-  // ==========================================
+  // 2. GET (Ambil Data - Bisa untuk Admin atau Buyer)
   if (req.method === 'GET') {
-    // Cek Password Admin
     const clientPassword = req.headers['x-admin-password'];
-    if (clientPassword !== ADMIN_PASSWORD) {
-      return res.status(401).json({ error: 'Akses Ditolak! Password Salah.' });
-    }
+    const { ids } = req.query; // Menangkap parameter ?ids=FRM-123,FRM-456
 
     try {
-      // Ambil semua struk, urutkan dari yang paling baru
-      const { data, error } = await supabase
-        .from('receipts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return res.status(200).json(data);
-
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
-    }
-  }
-
-  // ==========================================
-  // 3. LOGIKA KONFIRMASI ADMIN (METHOD PATCH)
-  // ==========================================
-  if (req.method === 'PATCH') {
-    // Cek Password Admin
-    const clientPassword = req.headers['x-admin-password'];
-    if (clientPassword !== ADMIN_PASSWORD) {
-      return res.status(401).json({ error: 'Akses Ditolak!' });
-    }
-
-    try {
-      const { receipt_id, new_status } = req.body; // CONFIRMED atau REJECTED
-
-      if (!receipt_id || !new_status) {
-        return res.status(400).json({ error: 'Data tidak lengkap' });
+      // Kalau yang minta adalah ADMIN (bawa password)
+      if (clientPassword === ADMIN_PASSWORD) {
+        const { data, error } = await supabase.from('receipts').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        return res.status(200).json(data);
       }
 
-      // Update status di Supabase
-      const { data, error } = await supabase
-        .from('receipts')
-        .update({ status: new_status })
-        .eq('receipt_id', receipt_id)
-        .select();
+      // Kalau yang minta adalah BUYER (bawa ID struk)
+      if (ids) {
+        const idArray = ids.split(',');
+        const { data, error } = await supabase
+          .from('receipts')
+          .select('receipt_id, status') // Cuma butuh ID dan status
+          .in('receipt_id', idArray);
+        if (error) throw error;
+        return res.status(200).json(data);
+      }
 
-      if (error) throw error;
-      return res.status(200).json({ message: 'Status berhasil diupdate', data });
-
+      return res.status(401).json({ error: 'Akses Ditolak!' });
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
   }
 
-  // ==========================================
-  // 4. LOGIKA HAPUS STRUK (METHOD DELETE)
-  // ==========================================
-  if (req.method === 'DELETE') {
-    // Cek Password Admin
+  // 3. PATCH (Konfirmasi Admin)
+  if (req.method === 'PATCH') {
     const clientPassword = req.headers['x-admin-password'];
-    if (clientPassword !== ADMIN_PASSWORD) {
-      return res.status(401).json({ error: 'Akses Ditolak!' });
+    if (clientPassword !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Akses Ditolak!' });
+
+    try {
+      const { receipt_id, new_status } = req.body;
+      const { data, error } = await supabase.from('receipts').update({ status: new_status }).eq('receipt_id', receipt_id).select();
+      if (error) throw error;
+      return res.status(200).json({ message: 'Status diupdate', data });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
     }
+  }
+
+  // 4. DELETE (Hapus Admin)
+  if (req.method === 'DELETE') {
+    const clientPassword = req.headers['x-admin-password'];
+    if (clientPassword !== ADMIN_PASSWORD) return res.status(401).json({ error: 'Akses Ditolak!' });
 
     try {
       const { receipt_id } = req.body;
-      if (!receipt_id) return res.status(400).json({ error: 'ID Struk kosong' });
-
-      // Hapus dari Supabase berdasarkan receipt_id
-      const { error } = await supabase
-        .from('receipts')
-        .delete()
-        .eq('receipt_id', receipt_id);
-
+      const { error } = await supabase.from('receipts').delete().eq('receipt_id', receipt_id);
       if (error) throw error;
-      return res.status(200).json({ message: 'Struk berhasil dihapus permanen' });
-
+      return res.status(200).json({ message: 'Struk dihapus' });
     } catch (error) {
       return res.status(500).json({ error: error.message });
     }
   }
 
-  // Kalau method-nya nggak di atas (misal PUT), tolak.
   return res.status(405).json({ error: 'Method tidak diizinkan' });
 }
