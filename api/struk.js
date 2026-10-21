@@ -9,9 +9,9 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 export default async function handler(req, res) {
-  // Setup CORS biar GitHub Pages bisa akses Vercel
+  // Setup CORS biar GitHub Pages / Vercel Admin bisa akses
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-password');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
@@ -119,5 +119,34 @@ export default async function handler(req, res) {
     }
   }
 
+  // ==========================================
+  // 4. LOGIKA HAPUS STRUK (METHOD DELETE)
+  // ==========================================
+  if (req.method === 'DELETE') {
+    // Cek Password Admin
+    const clientPassword = req.headers['x-admin-password'];
+    if (clientPassword !== ADMIN_PASSWORD) {
+      return res.status(401).json({ error: 'Akses Ditolak!' });
+    }
+
+    try {
+      const { receipt_id } = req.body;
+      if (!receipt_id) return res.status(400).json({ error: 'ID Struk kosong' });
+
+      // Hapus dari Supabase berdasarkan receipt_id
+      const { error } = await supabase
+        .from('receipts')
+        .delete()
+        .eq('receipt_id', receipt_id);
+
+      if (error) throw error;
+      return res.status(200).json({ message: 'Struk berhasil dihapus permanen' });
+
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
+  // Kalau method-nya nggak di atas (misal PUT), tolak.
   return res.status(405).json({ error: 'Method tidak diizinkan' });
 }
