@@ -301,7 +301,8 @@ const $ = id => document.getElementById(id);
 // URL BACKEND VERCEL LO
 const API_URL = "https://firman-struk-digital.vercel.app/api/struk";
 
-let receipts = [];
+// AMBIL DATA DARI MEMORI HP (LOCALSTORAGE)
+let receipts = JSON.parse(localStorage.getItem('buyer_receipts')) || [];
 let latestReceiptCode = '';
 let toastTimer;
 
@@ -342,9 +343,17 @@ function renderReceipts() {
     const statusCell = document.createElement('td');
     const status = document.createElement('span');
     const isConfirmed = receipt.status === 'CONFIRMED';
-    status.textContent = isConfirmed ? 'Selesai' : 'Menunggu';
-    status.style.cssText = `color:${isConfirmed ? '#b9f6ca' : '#f1a43a'};font-size:10px;padding:5px 8px;` +
-      `border:1px solid ${isConfirmed ? '#b9f6ca25' : '#f1a43a25'};border-radius:7px;white-space:nowrap`;
+    const isRejected = receipt.status === 'REJECTED';
+    
+    status.textContent = isConfirmed ? 'Selesai' : (isRejected ? 'Ditolak' : 'Menunggu');
+    
+    let color = '#f1a43a'; // Orange untuk pending
+    let borderColor = '#f1a43a25';
+    if(isConfirmed) { color = '#b9f6ca'; borderColor = '#b9f6ca25'; }
+    if(isRejected) { color = '#e94a4a'; borderColor = '#e94a4a25'; }
+
+    status.style.cssText = `color:${color};font-size:10px;padding:5px 8px;` +
+      `border:1px solid ${borderColor};border-radius:7px;white-space:nowrap`;
     statusCell.append(status);
 
     row.append(product, price, statusCell);
@@ -416,6 +425,9 @@ $('createReceipt').addEventListener('click', async () => {
       createdAt: new Date().toISOString()
     });
 
+    // SIMPAN KE MEMORI HP AGAR TIDAK HILANG SAAT REFRESH
+    localStorage.setItem('buyer_receipts', JSON.stringify(receipts));
+
     $('receiptCodeValue').textContent = latestReceiptCode;
     $('receiptCodeResult').hidden = true;
     $('showReceiptCode').setAttribute('aria-expanded', 'false');
@@ -434,6 +446,7 @@ $('createReceipt').addEventListener('click', async () => {
   }
 });
 
+// Tampilkan data saat halaman pertama kali dibuka
 renderReceipts();
 </script>
 </body>
